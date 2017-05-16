@@ -18,7 +18,7 @@ DecodeAES = lambda c, e: c.decrypt(base64.b64decode(e)).rstrip(PADDING)
 
 
 # Encrypt function for call in main file
-def encryption():
+def encryption(userString):
     letter = 3
     while letter == 3:
         secret = '0123456789abcdef'
@@ -31,14 +31,14 @@ def encryption():
             letter = 3
             # this checks the encryption key to ensure it matches the correct length
     # encode a string
-    data = input("Please Enter Text You'd Like Encrypted: ")
+    data = userString
     encoded = EncodeAES(cipher, data)
     print('Encrypted string:', encoded)
 
 
 # Decrypt function for call in main file
-def decryption():
-    encoded = input("Please Enter The Encoded String:\n")
+def decryption(userString):
+    encoded = userString
     letter = 3
     while letter == 3:
         secret = '0123456789abcdef'
