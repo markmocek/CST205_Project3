@@ -73,24 +73,30 @@ class TheGUI:
         self.label.bind("<Button-1>", self.cycle_label_text)
         self.label.pack()
 
-        self.greet_button = Button(master, text="Encrypt", command=self.encrpt)
+        Label(master, text="Enter String:").grid(row=0)
+
+        e1 = Entry(master)
+
+        e1.grid(row=0, column=1)
+
+        self.greet_button = Button(master, text="Encrypt", command=self.encrpt(e1))
         self.greet_button.pack()
 
-        self.greet_button = Button(master, text="Decrypt", command=self.decrypt)
+        self.greet_button = Button(master, text="Decrypt", command=self.decrypt(e1))
         self.greet_button.pack()
 
         self.close_button = Button(master, text="Close", command=master.quit)
         self.close_button.pack()
 
-    def encrpt(self):
+    def encrpt(self, e1):
         image_capture()
         if(face_recognition()):
-            encryption()
+            encryption(e1)
 
-    def decrypt(self):
+    def decrypt(self, e1):
         image_capture()
         if (face_recognition()):
-            decryption()
+            decryption(e1)
 
     def cycle_label_text(self, event):
         self.label_index += 1
