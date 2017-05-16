@@ -1,4 +1,4 @@
-Sean Vucinich - Abel Gonzalez - Mark Mocek
+Justin Hines - Francisco Hernandez - Mark Mocek
 
 CST205 Team 252 5/16/17
 
