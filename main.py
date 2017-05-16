@@ -54,6 +54,7 @@ def image_capture():
 
 # GUI for program
 class TheGUI:
+    # clickable directions for the user to navigate
     LABEL_TEXT = [
         "The program uses face recognition as a security measure when encrypting and decrypting. Click for more info..",
         "Program starts under the assumption that you are logged in as the current user. 1/4",
@@ -61,48 +62,58 @@ class TheGUI:
         "The face recognition then determines if the face is that of the user. 3/4",
         "If it is the user, the program does as asked. If it is not he user, the program ends. 4/4"
     ]
-
+    
+    # title name for gui window
     def __init__(self, master, toencode):
         self.master = master
         master.title("Face Recognition Encryption and Decryption")
-
+        
+        #instruction for the clickable directions window
         self.label_index = 0
         self.label_text = StringVar()
         self.label_text.set(self.LABEL_TEXT[self.label_index])
         self.label = Label(master, textvariable=self.label_text)
         self.label.bind("<Button-1>", self.cycle_label_text)
         self.label.pack()
-
+        
+        # entry box for user to input into
         Label(master, text="Enter String:").grid(row=0)
 
         e1 = Entry(master)
 
         e1.grid(row=0, column=1)
-
+        
+        # encrypt button that runs encryption function
         self.greet_button = Button(master, text="Encrypt", command=self.encrpt(e1))
         self.greet_button.pack()
-
+        
+        # decrypt button that runs the decryption function
         self.greet_button = Button(master, text="Decrypt", command=self.decrypt(e1))
         self.greet_button.pack()
-
+        
+        # close button for user to exit program
         self.close_button = Button(master, text="Close", command=master.quit)
         self.close_button.pack()
-
+    
+    # function that captures image from webcam and runs encryption
     def encrpt(self, e1):
         image_capture()
         if(face_recognition()):
             encryption(e1)
-
+    
+    # function that captures image from webcam and runs decryption
     def decrypt(self, e1):
         image_capture()
         if (face_recognition()):
             decryption(e1)
-
+    
+    # function for clickable text
     def cycle_label_text(self, event):
         self.label_index += 1
         self.label_index %= len(self.LABEL_TEXT)
         self.label_text.set(self.LABEL_TEXT[self.label_index])
 
+# loop for gui
 root = Tk()
 my_gui = TheGUI(root)
 root.mainloop()
