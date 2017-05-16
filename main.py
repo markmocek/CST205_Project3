@@ -1,54 +1,102 @@
-import Tkinter
-from Tkinter import *
-import tkMessageBox
-import tkFileDialog
-from tkFileDialog import askopenfilename
-from tkFileDialog import asksaveasfile
-import Tkconstants
-import os
+'''
+CST205 - Project 3 - Justin Hines, Francisco Hernandez, Mark Mocek - 5/16/17
+
+Justin - Created crypt.py file. It takes user input and encrypts or decrypts it with
+a given key and the cipher library.
+Francisco - Created the facedetect.py file. It takes the image captured and compares it
+to the face on file for the user.
+Mark - Created the main.py file. The file supplies the user with a GUI to operate with and 
+calls the functions from the crypt.py and facedetect.py files.
+'''
+
+import cv2
+import tkinter
+from tkinter import *
+from crypt import encryption, decryption
+from facedetect import face_recognition
 
 
-def displayText():
-    """ Display the Entry text value. """
-    global entryWidget
+# image capture for face recognition
+def image_capture():
+    # Camera port 0 is the laptop webcam
+    camera_port = 0
+
+    # Number of frames to throw away while the camera adjusts to light levels
+    ramp_frames = 30
+
+    # Index to a camera port.
+    camera = cv2.VideoCapture(camera_port)
+
+    # Captures image from the camera and returns it in PIL format
+    def get_image():
+        # read to get a full image out of a VideoCapture object
+        retval, im = camera.read()
+        return im
+
+    # Ramp the camera - these frames will be discarded
+    for i in xrange(ramp_frames):
+        temp = get_image()
+
+    print("Taking image...")
+
+    # Take the actual image we want to keep
+    camera_capture = get_image()
+    file = "scott.jpeg"
+
+    # correct format based on the file extension you provide
+    cv2.imwrite(file, camera_capture)
+
+    print("Complete")
+
+    # Release the camera
+    del (camera)
 
 
-    if entryWidget.get().strip() == "":
-         tkMessageBox.showerror("Tkinter Entry Widget", "Enter Secret Message")
-    else:
-         tkMessageBox.showinfo("Tkinter Entry Widget", "Secret Message =" + entryWidget.get().strip())
-         f = open("Message.txt","w")
-         f.write(entryWidget.get().strip()) 
-         f.close()
-         file = open("Message.txt","r")
-         msg = file
-         print file.read()
+# GUI for program
+class TheGUI:
+    LABEL_TEXT = [
+        "The program uses face recognition as a security measure when encrypting and decrypting. Click for more info..",
+        "Program starts under the assumption that you are logged in as the current user. 1/4",
+        "Once the 'Encrypt' or 'Decrypt' button is chosen, the program takes and image from the web cam. 2/4",
+        "The face recognition then determines if the face is that of the user. 3/4",
+        "If it is the user, the program does as asked. If it is not he user, the program ends. 4/4"
+    ]
 
-if __name__ == "__main__":     
-   
-    root = Tk()
- 
+    def __init__(self, master, toencode):
+        self.master = master
+        master.title("Face Recognition Encryption and Decryption")
 
-a = Button(root, text="Open", command= openfile)
-a.pack()
+        self.label_index = 0
+        self.label_text = StringVar()
+        self.label_text.set(self.LABEL_TEXT[self.label_index])
+        self.label = Label(master, textvariable=self.label_text)
+        self.label.bind("<Button-1>", self.cycle_label_text)
+        self.label.pack()
 
-root.title("Tkinter Entry Widget")
-root["padx"] = 40
-root["pady"] = 20   
-# Create a text frame to hold the text Label and the Entry widget
-textFrame = Frame(root) 
-#Create a Label in textFrame
-entryLabel = Label(textFrame)
-entryLabel["text"] = "Enter the text:"
-entryLabel.pack(side=LEFT)
+        self.greet_button = Button(master, text="Encrypt", command=self.encrpt)
+        self.greet_button.pack()
 
-# Create an Entry Widget in textFrame
-entryWidget = Entry(textFrame)
-entryWidget["width"] = 50
-entryWidget.pack(side=LEFT)
-textFrame.pack()
+        self.greet_button = Button(master, text="Decrypt", command=self.decrypt)
+        self.greet_button.pack()
 
-button = Button(root, text="Submit", command=displayText)
-button.pack()
+        self.close_button = Button(master, text="Close", command=master.quit)
+        self.close_button.pack()
 
+    def encrpt(self):
+        image_capture()
+        if(face_recognition()):
+            encryption()
+
+    def decrypt(self):
+        image_capture()
+        if (face_recognition()):
+            decryption()
+
+    def cycle_label_text(self, event):
+        self.label_index += 1
+        self.label_index %= len(self.LABEL_TEXT)
+        self.label_text.set(self.LABEL_TEXT[self.label_index])
+
+root = Tk()
+my_gui = TheGUI(root)
 root.mainloop()
